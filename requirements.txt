@@ -1,0 +1,22 @@
+# Core
+numpy>=1.25.0
+pandas>=2.1.0
+matplotlib>=3.8.0
+pyyaml>=6.0
+pyarrow>=14.0.0
+
+# Data
+yfinance>=0.2.31
+
+# Backtesting
+scipy>=1.11.0
+tqdm>=4.66.0
+
+# Dashboard
+streamlit>=1.32.0
+plotly>=5.18.0
+kaleido>=0.2.1
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
