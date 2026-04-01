@@ -1,5 +1,7 @@
 """KPI card components for dashboard."""
 
+from __future__ import annotations
+
 import streamlit as st
 
 

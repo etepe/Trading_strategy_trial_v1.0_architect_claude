@@ -1,5 +1,7 @@
 """Core backtest engine — runs all four strategies in a single pass."""
 
+from __future__ import annotations
+
 import json
 import logging
 from datetime import datetime

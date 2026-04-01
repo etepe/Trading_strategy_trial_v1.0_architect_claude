@@ -1,5 +1,7 @@
 """CLI entry point: python -m fetm.backtest"""
 
+from __future__ import annotations
+
 import argparse
 import logging
 

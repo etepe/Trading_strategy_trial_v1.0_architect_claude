@@ -1,5 +1,7 @@
 """Number formatting helpers for dashboard display."""
 
+from __future__ import annotations
+
 
 def fmt_pct(value: float | None, decimals: int = 1) -> str:
     """Format as percentage."""

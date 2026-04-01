@@ -1,5 +1,7 @@
 """Data download module — fetch OHLCV data from yfinance."""
 
+from __future__ import annotations
+
 import logging
 import time
 from pathlib import Path

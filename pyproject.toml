@@ -2,7 +2,7 @@
 name = "fetm"
 version = "0.1.0"
 description = "First Exit-Time Momentum Trading Strategy"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

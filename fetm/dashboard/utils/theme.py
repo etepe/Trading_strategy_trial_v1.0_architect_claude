@@ -1,5 +1,7 @@
 """Dashboard theme and chart styling constants."""
 
+from __future__ import annotations
+
 import plotly.graph_objects as go
 
 CHART_DEFAULTS = {

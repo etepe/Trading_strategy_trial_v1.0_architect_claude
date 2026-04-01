@@ -1,5 +1,7 @@
 """Page 1: Overview — Executive summary dashboard."""
 
+from __future__ import annotations
+
 import pandas as pd
 import streamlit as st
 

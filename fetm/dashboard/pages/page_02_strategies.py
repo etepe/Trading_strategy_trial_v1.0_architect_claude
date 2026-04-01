@@ -1,5 +1,7 @@
 """Page 2: Strategy Comparison — Deep side-by-side analysis."""
 
+from __future__ import annotations
+
 import pandas as pd
 import streamlit as st
 

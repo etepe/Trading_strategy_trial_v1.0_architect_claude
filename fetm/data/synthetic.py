@@ -1,5 +1,7 @@
 """Generate synthetic SPY-like data for development when yfinance is unavailable."""
 
+from __future__ import annotations
+
 import logging
 
 import numpy as np

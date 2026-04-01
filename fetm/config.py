@@ -1,5 +1,7 @@
 """Configuration loader — single source of truth for all parameters."""
 
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Any
 

@@ -1,5 +1,7 @@
 """Volatility estimators: EWMA, Parkinson, First Exit-Time, and Composite."""
 
+from __future__ import annotations
+
 import logging
 from collections import deque
 
