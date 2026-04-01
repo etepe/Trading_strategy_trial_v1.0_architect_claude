@@ -1,0 +1,13 @@
+[project]
+name = "fetm"
+version = "0.1.0"
+description = "First Exit-Time Momentum Trading Strategy"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
