@@ -65,6 +65,13 @@ def equity_curve_chart(
     return apply_chart_defaults(fig, "Equity Curves (Log Scale)")
 
 
+def _hex_to_rgba(hex_color: str, alpha: float = 0.2) -> str:
+    """Convert hex color to rgba string."""
+    h = hex_color.lstrip("#")
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return f"rgba({r},{g},{b},{alpha})"
+
+
 def drawdown_chart(results: pd.DataFrame) -> go.Figure:
     """Create underwater drawdown chart."""
     fig = go.Figure()
@@ -79,7 +86,7 @@ def drawdown_chart(results: pd.DataFrame) -> go.Figure:
                 name=STRATEGY_LABELS[strat],
                 fill="tozeroy",
                 line=dict(color=color, width=0.5),
-                fillcolor=color.replace(")", ",0.2)").replace("rgb", "rgba") if "rgb" in color else color + "33",
+                fillcolor=_hex_to_rgba(color, 0.2),
             ))
 
     fig.update_yaxes(title="Drawdown")
