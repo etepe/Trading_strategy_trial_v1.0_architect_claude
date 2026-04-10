@@ -45,19 +45,23 @@ def equity_curve_chart(
     # Add crisis period shading
     if crisis_periods:
         for crisis_id, period in crisis_periods.items():
-            fig.add_vrect(
-                x0=period["start"], x1=period["end"],
-                fillcolor="rgba(239,68,68,0.08)", line_width=0,
-                annotation_text=period.get("name", ""),
-                annotation_position="top left",
-                annotation_font_size=8,
-                annotation_font_color="#EF4444",
-            )
+            start = pd.Timestamp(period["start"])
+            end = pd.Timestamp(period["end"])
+            # Only shade if period overlaps with data
+            if start <= results.index[-1] and end >= results.index[0]:
+                fig.add_vrect(
+                    x0=start, x1=end,
+                    fillcolor="rgba(239,68,68,0.08)", line_width=0,
+                    annotation_text=period.get("name", ""),
+                    annotation_position="top left",
+                    annotation_font_size=8,
+                    annotation_font_color="#EF4444",
+                )
 
     # Add IS/OOS divider
     if in_sample_end:
         fig.add_vline(
-            x=in_sample_end, line_dash="dash",
+            x=pd.Timestamp(in_sample_end), line_dash="dash",
             line_color="#6B7280", line_width=1,
             annotation_text="IS/OOS",
             annotation_position="top",
