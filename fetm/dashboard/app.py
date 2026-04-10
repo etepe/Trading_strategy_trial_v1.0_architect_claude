@@ -24,20 +24,54 @@ from fetm.dashboard.utils.data_loader import load_run, filter_by_period
 from fetm.dashboard.components.filters import render_sidebar
 
 
+def _resolve_latest(runs_dir: Path) -> str | None:
+    """Find the latest run directory, handling both symlinks and Windows fallback."""
+    # 1. Try symlink (Unix)
+    latest = runs_dir / "latest"
+    if latest.exists():
+        return str(latest.resolve())
+
+    # 2. Try latest.txt pointer (Windows fallback)
+    latest_txt = runs_dir / "latest.txt"
+    if latest_txt.is_file():
+        target = latest_txt.read_text().strip()
+        if Path(target).exists():
+            return target
+
+    # 3. Pick the most recent timestamped directory
+    if runs_dir.is_dir():
+        subdirs = sorted(
+            [d for d in runs_dir.iterdir() if d.is_dir() and d.name[0].isdigit()],
+            key=lambda d: d.name,
+            reverse=True,
+        )
+        if subdirs:
+            return str(subdirs[0].resolve())
+
+    return None
+
+
 def get_run_dir() -> str:
     """Parse run directory from CLI args or use default."""
     # Check for --run-dir in sys.argv (after --)
     args = sys.argv[1:]
     for i, arg in enumerate(args):
         if arg == "--run-dir" and i + 1 < len(args):
-            return args[i + 1]
+            given = args[i + 1]
+            # If "latest" was given, resolve it
+            p = Path(given)
+            if p.name == "latest" and not p.exists():
+                resolved = _resolve_latest(p.parent)
+                if resolved:
+                    return resolved
+            return given
 
-    # Default to latest
-    default = Path("output/runs/latest")
-    if default.exists():
-        return str(default.resolve())
+    # Default: try to find latest run
+    resolved = _resolve_latest(Path("output/runs"))
+    if resolved:
+        return resolved
 
-    st.error("No run directory specified. Use --run-dir <path>")
+    st.error("No run directory found. Run `python -m fetm.backtest` first.")
     st.stop()
     return ""
 
