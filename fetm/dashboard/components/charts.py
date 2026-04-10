@@ -52,10 +52,6 @@ def equity_curve_chart(
                 fig.add_vrect(
                     x0=start, x1=end,
                     fillcolor="rgba(239,68,68,0.08)", line_width=0,
-                    annotation_text=period.get("name", ""),
-                    annotation_position="top left",
-                    annotation_font_size=8,
-                    annotation_font_color="#EF4444",
                 )
 
     # Add IS/OOS divider
@@ -63,8 +59,6 @@ def equity_curve_chart(
         fig.add_vline(
             x=pd.Timestamp(in_sample_end), line_dash="dash",
             line_color="#6B7280", line_width=1,
-            annotation_text="IS/OOS",
-            annotation_position="top",
         )
 
     fig.update_yaxes(type="log", title="Cumulative Return")
