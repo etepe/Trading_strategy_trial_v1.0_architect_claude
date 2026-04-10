@@ -312,23 +312,9 @@ class BacktestEngine:
         if signal_cols:
             results[signal_cols].to_parquet(diag_dir / "signal_components.parquet")
 
-        # Update latest pointer (symlink on Unix, text file on Windows)
-        latest = run_dir.parent / "latest"
-        try:
-            if latest.is_symlink() or latest.is_dir():
-                if latest.is_symlink():
-                    latest.unlink()
-                latest.symlink_to(run_dir.name)
-            elif latest.is_file():
-                latest.unlink()
-                latest.symlink_to(run_dir.name)
-            else:
-                latest.symlink_to(run_dir.name)
-        except OSError:
-            # Symlinks require admin on Windows — write a text pointer instead
-            latest_txt = run_dir.parent / "latest.txt"
-            latest_txt.write_text(str(run_dir.resolve()))
-            logger.info("Symlink not supported; wrote latest.txt instead")
+        # Update latest pointer (plain text file — no symlink needed)
+        latest_txt = run_dir.parent / "latest.txt"
+        latest_txt.write_text(str(run_dir.resolve()))
 
         logger.info("Results saved to %s", run_dir)
         return run_dir
