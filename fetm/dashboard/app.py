@@ -61,7 +61,7 @@ def main() -> None:
     # Page navigation
     page = st.sidebar.radio(
         "Navigation",
-        ["Overview", "Strategy Comparison"],
+        ["Overview", "Strategy Comparison", "Strategy Parameters"],
         index=0,
     )
 
@@ -80,6 +80,9 @@ def main() -> None:
     elif page == "Strategy Comparison":
         from fetm.dashboard.pages.page_02_strategies import render_strategies
         render_strategies(filtered, run_data["metrics"], run_data.get("config", {}))
+    elif page == "Strategy Parameters":
+        from fetm.dashboard.pages.page_03_parameters import render_parameters
+        render_parameters(run_data, filters)
 
 
 if __name__ == "__main__":

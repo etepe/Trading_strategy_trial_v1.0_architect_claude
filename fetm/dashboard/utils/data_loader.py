@@ -49,6 +49,71 @@ def load_run(run_dir: str) -> dict:
     }
 
 
+@st.cache_data(ttl=300)
+def load_optimization(opt_dir: str) -> dict:
+    """Load walk-forward optimization artifacts from ``opt_dir``.
+
+    Expects the directory produced by ``python -m fetm.optimize``:
+
+        walk_forward_results.parquet
+        trials.parquet
+        best_params.yaml
+        run_config.yaml
+        summary.json
+
+    Missing files are tolerated and represented as empty frames / dicts so
+    the dashboard can render a partial view.
+    """
+    opt_path = Path(opt_dir)
+
+    per_window = pd.DataFrame()
+    wf_path = opt_path / "walk_forward_results.parquet"
+    if wf_path.exists():
+        per_window = pd.read_parquet(wf_path)
+
+    trials = pd.DataFrame()
+    trials_path = opt_path / "trials.parquet"
+    if trials_path.exists():
+        trials = pd.read_parquet(trials_path)
+
+    best_params: dict = {}
+    best_path = opt_path / "best_params.yaml"
+    if best_path.exists():
+        with open(best_path) as f:
+            best_params = yaml.safe_load(f) or {}
+
+    run_config: dict = {}
+    rc_path = opt_path / "run_config.yaml"
+    if rc_path.exists():
+        with open(rc_path) as f:
+            run_config = yaml.safe_load(f) or {}
+
+    summary: dict = {}
+    summary_path = opt_path / "summary.json"
+    if summary_path.exists():
+        with open(summary_path) as f:
+            summary = json.load(f)
+
+    return {
+        "per_window": per_window,
+        "trials": trials,
+        "best_params": best_params,
+        "run_config": run_config,
+        "summary": summary,
+        "path": str(opt_path),
+    }
+
+
+def list_optimization_runs(root: str = "output/optimization") -> list[str]:
+    """Return sorted list of optimization run directories (most recent first)."""
+    root_path = Path(root)
+    if not root_path.exists():
+        return []
+    dirs = [p for p in root_path.iterdir() if p.is_dir() and p.name != "latest"]
+    dirs.sort(key=lambda p: p.name, reverse=True)
+    return [str(p) for p in dirs]
+
+
 def filter_by_period(
     results: pd.DataFrame,
     period_option: str,

@@ -9,6 +9,7 @@ import pandas as pd
 
 from fetm.backtest.engine import BacktestEngine
 from fetm.backtest.metrics import PerformanceMetrics
+from fetm.utils.nested import set_nested
 
 logger = logging.getLogger(__name__)
 
@@ -96,8 +97,8 @@ class SensitivityAnalysis:
         for v1 in param1_values:
             for v2 in param2_values:
                 config = copy.deepcopy(self.base_config)
-                self._set_nested(config, param1_name, v1)
-                self._set_nested(config, param2_name, v2)
+                set_nested(config, param1_name, v1)
+                set_nested(config, param2_name, v2)
 
                 engine = BacktestEngine(config)
                 res = engine.run(data)
@@ -117,10 +118,7 @@ class SensitivityAnalysis:
 
         return pd.DataFrame(results_list)
 
+    # Backwards-compat shim; new code should use fetm.utils.nested.set_nested.
     @staticmethod
     def _set_nested(d: dict, key_path: str, value: Any) -> None:
-        """Set a value in a nested dict using dot-separated path."""
-        keys = key_path.split(".")
-        for k in keys[:-1]:
-            d = d[k]
-        d[keys[-1]] = value
+        set_nested(d, key_path, value)

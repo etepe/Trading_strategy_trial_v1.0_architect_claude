@@ -200,6 +200,50 @@ def return_distribution(results: pd.DataFrame) -> go.Figure:
     return apply_chart_defaults(fig, "Return Distribution")
 
 
+def parameter_drift_chart(
+    per_window: pd.DataFrame,
+    param_columns: list[str],
+    title: str = "Optimal Parameter Drift",
+) -> go.Figure:
+    """Line chart of optimal parameter values across walk-forward windows.
+
+    Args:
+        per_window: DataFrame from ``walk_forward_results.parquet`` (one row
+            per walk-forward window, columns prefixed ``param.``).
+        param_columns: Fully-qualified column names (with ``param.`` prefix)
+            to plot. Each column becomes one trace.
+        title: Chart title.
+    """
+    fig = go.Figure()
+    if per_window.empty or not param_columns:
+        return apply_chart_defaults(fig, title)
+
+    x_col = "oos_end" if "oos_end" in per_window.columns else "window"
+    x = per_window[x_col]
+
+    palette = [
+        "#10B981", "#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6",
+        "#EC4899", "#14B8A6", "#F97316", "#6366F1", "#84CC16",
+        "#06B6D4", "#A855F7", "#EAB308",
+    ]
+    for i, col in enumerate(param_columns):
+        if col not in per_window.columns:
+            continue
+        label = col.removeprefix("param.")
+        fig.add_trace(go.Scatter(
+            x=x, y=per_window[col],
+            mode="lines+markers",
+            name=label,
+            line=dict(color=palette[i % len(palette)], width=1.5),
+            marker=dict(size=5),
+            yaxis=f"y{i + 1}" if i == 0 else None,
+        ))
+
+    fig.update_xaxes(title="Walk-forward window (OOS end)")
+    fig.update_yaxes(title="Value")
+    return apply_chart_defaults(fig, title)
+
+
 def qq_plot(results: pd.DataFrame, strategy: str = "fetm") -> go.Figure:
     """Create QQ-plot of strategy returns vs normal distribution."""
     from scipy import stats
